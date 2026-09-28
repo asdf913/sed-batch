@@ -44,14 +44,20 @@ public class SedBatch {
 		//
 		final Map<String, String> map = toMap(args);
 		//
-		final File file = testAndApply(Objects::nonNull, get(map, "file"), File::new, null);
+		perform(testAndApply(Objects::nonNull, get(map, "file"), File::new, null),
+				Pair.of(get(map, "regexp"), get(map, "replacement")), Objects.equals(get(map, "execute"), "true"));
+		//
+	}
+
+	private static void perform(final File file, final Entry<String, String> entry, final boolean execute)
+			throws IOException {
 		//
 		final String before = testAndApply(SedBatch::isFile, file,
 				x -> FileUtils.readFileToString(x, StandardCharsets.UTF_8), null);
 		//
-		final String regexp = get(map, "regexp");
+		final String regexp = getKey(entry);
 		//
-		final String replacement = get(map, "replacement");
+		final String replacement = getValue(entry);
 		//
 		final String after = testAndApply((a, b) -> Boolean.logicalAnd(a != null, b != null), regexp, replacement,
 				(a, b) -> toStringResult(sed(testAndApply(SedBatch::isFile, file, Unix4j::fromFile, null), a, b)),
@@ -66,7 +72,7 @@ public class SedBatch {
 			//
 			info(LOG, Objects.toString(diff));
 			//
-			if (Objects.equals(get(map, "execute"), "true")) {
+			if (execute) {
 				//
 				toFile(sed(testAndApply(SedBatch::isFile, file, Unix4j::fromFile, null), regexp, replacement), file);
 				//
