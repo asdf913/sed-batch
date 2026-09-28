@@ -63,10 +63,7 @@ public class SedBatch {
 			//
 			info(LOG, getAbsolutePath(file));
 			//
-			final Patch<String> patch = testAndApply((a, b) -> Boolean.logicalAnd(a != null, b != null), before, after,
-					(a, b) -> DiffUtils.diff(a, b, null), null);
-			//
-			info(LOG, Objects.toString(patch));
+			info(LOG, Objects.toString(diff));
 			//
 			if (Objects.equals(get(map, "execute"), "true")) {
 				//
