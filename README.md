@@ -5,3 +5,22 @@ This utility program use the <a href="https://github.com/tools4j/unix4j">unix4j<
 https://github.com/tools4j/unix4j
 
 <img width="1220" height="260" alt="Screenshot from 2026-09-28 22-12-00" src="https://github.com/user-attachments/assets/8fa9fe3c-653c-47f0-a576-009ea0b7fc81" />
+
+## Command
+
+### Single File
+
+#### Dry-run (i.e. file is not changed, just display the difference)
+
+<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=pom.xml regexp=0.0.1 replacement=0.0.2</pre>
+
+<pre>[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: /home/lau-ka-ho/git/sed-batch/target/pom.xml
+[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: Patch{deltas=[[ChangeDelta, position: 6, lines: [	<version>0.0.1-SNAPSHOT</version>] to [	<version>0.0.2-SNAPSHOT</version>]]]}</pre>
+
+#### Update the given file
+
+<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=pom.xml regexp=0.0.1 replacement=0.0.2 execute=true</pre>
+
+<pre>[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: /home/lau-ka-ho/git/sed-batch/target/pom.xml
+[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: Patch{deltas=[[ChangeDelta, position: 6, lines: [	<version>0.0.1-SNAPSHOT</version>] to [	<version>0.0.2-SNAPSHOT</version>]]]}
+[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: Updated</pre>
