@@ -44,9 +44,34 @@ public class SedBatch {
 		//
 		final Map<String, String> map = toMap(args);
 		//
-		perform(testAndApply(Objects::nonNull, get(map, "file"), File::new, null),
-				Pair.of(get(map, "regexp"), get(map, "replacement")), Objects.equals(get(map, "execute"), "true"));
-		//
+		if (containsKey(map, "fileNameList")) {
+			//
+			final List<String> lines = testAndApply(SedBatch::isFile,
+					testAndApply(Objects::nonNull, get(map, "fileNameList"), File::new, null),
+					x -> FileUtils.readLines(x, StandardCharsets.UTF_8), null);
+			//
+			Entry<String, String> entry = null;
+			//
+			final boolean execute = Objects.equals(get(map, "execute"), "true");
+			//
+			for (int i = 0; i < size(lines); i++) {
+				//
+				perform(testAndApply(Objects::nonNull, get(lines, i), File::new, null), entry = ObjectUtils
+						.getIfNull(entry, () -> Pair.of(get(map, "regexp"), get(map, "replacement"))), execute);
+				//
+			} // for
+				//
+		} else {
+			//
+			perform(testAndApply(Objects::nonNull, get(map, "file"), File::new, null),
+					Pair.of(get(map, "regexp"), get(map, "replacement")), Objects.equals(get(map, "execute"), "true"));
+			//
+		} // if
+			//
+	}
+
+	private static boolean containsKey(final Map<?, ?> instance, final Object key) {
+		return instance != null && instance.containsKey(key);
 	}
 
 	private static void perform(final File file, final Entry<String, String> entry, final boolean execute)

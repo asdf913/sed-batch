@@ -1,7 +1,6 @@
 package org.unix4j;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -42,7 +41,7 @@ import io.github.toolfactory.narcissus.Narcissus;
 
 class SedBatchTest {
 
-	private static Method METHOD_GET_NAME, METHOD_GET_CLASS, METHOD_COLLECT = null;
+	private static Method METHOD_GET_NAME, METHOD_GET_CLASS, METHOD_COLLECT, METHOD_GET_ABSOLUTE_PATH = null;
 
 	@BeforeClass
 	static void beforeClass() throws NoSuchMethodException {
@@ -55,11 +54,13 @@ class SedBatchTest {
 		//
 		(METHOD_COLLECT = clz.getDeclaredMethod("collect", Stream.class, Collector.class)).setAccessible(true);
 		//
+		(METHOD_GET_ABSOLUTE_PATH = clz.getDeclaredMethod("getAbsolutePath", File.class)).setAccessible(true);
+		//
 	}
 
 	private static class IH implements InvocationHandler {
 
-		private Boolean test, isEmpty = null;
+		private Boolean test, isEmpty, containsKey = null;
 
 		private Integer size = null;
 
@@ -96,10 +97,18 @@ class SedBatchTest {
 				//
 				return null;
 				//
-			} else if (proxy instanceof Map && contains(Arrays.asList("get", "put"), name)) {
+			} else if (proxy instanceof Map) {
 				//
-				return null;
-				//
+				if (contains(Arrays.asList("get", "put"), name)) {
+					//
+					return null;
+					//
+				} else if (Objects.equals(name, "containsKey")) {
+					//
+					return containsKey;
+					//
+				} // if
+					//
 			} else if (proxy instanceof List && Objects.equals(name, "get")) {
 				//
 				return null;
@@ -382,7 +391,7 @@ class SedBatchTest {
 	}
 
 	@Test
-	void testMain() throws IOException {
+	void testMain() throws Throwable {
 		//
 		SedBatch.main(new String[] { "=", "= ", " =", "== " });
 		//
@@ -402,7 +411,7 @@ class SedBatchTest {
 			//
 		} // if
 			//
-		final String absolutePath = file != null ? file.getAbsolutePath() : null;
+		final String absolutePath = getAbsolutePath(file);
 		//
 		SedBatch.main(new String[] { "file=" + absolutePath });
 		//
@@ -418,8 +427,28 @@ class SedBatchTest {
 		//
 		Assert.assertEquals(FileUtils.readFileToString(file, charset), "");
 		//
+		SedBatch.main(new String[] { "fileNameList=." });
+		//
+		FileUtils.writeStringToFile(file, ".", charset);
+		//
+		SedBatch.main(new String[] { "fileNameList=" + absolutePath });
+		//
 		FileUtils.deleteQuietly(file);
 		//
+	}
+
+	private static String getAbsolutePath(final File instance) throws Throwable {
+		try {
+			final Object obj = invoke(METHOD_GET_ABSOLUTE_PATH, null, instance);
+			if (obj == null) {
+				return null;
+			} else if (obj instanceof String) {
+				return (String) obj;
+			}
+			throw new Throwable(Objects.toString(getClass(obj)));
+		} catch (final InvocationTargetException e) {
+			throw e.getTargetException();
+		}
 	}
 
 	private static String nextAlphanumeric(final RandomStringUtils instnace, final int count) {
