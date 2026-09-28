@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unix4j.builder.To;
 import org.unix4j.builder.Unix4jCommandBuilder;
 
@@ -34,6 +36,8 @@ import com.github.difflib.patch.Patch;
 import io.github.toolfactory.narcissus.Narcissus;
 
 public class SedBatch {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SedBatch.class);
 
 	public static void main(final String[] args) throws IOException {
 		//
@@ -57,23 +61,33 @@ public class SedBatch {
 		//
 		if (diff != null && !isEmpty(diff.getDeltas())) {
 			//
-			System.out.println(file);
+			info(LOG, getAbsolutePath(file));
 			//
 			final Patch<String> patch = testAndApply((a, b) -> Boolean.logicalAnd(a != null, b != null), before, after,
 					(a, b) -> DiffUtils.diff(a, b, null), null);
 			//
-			System.out.println(patch);
+			info(LOG, Objects.toString(patch));
 			//
 			if (Objects.equals(get(map, "execute"), "true")) {
 				//
 				toFile(sed(testAndApply(SedBatch::isFile, file, Unix4j::fromFile, null), regexp, replacement), file);
 				//
-				System.out.println("Updated");
+				info(LOG, "Updated");
 				//
 			} // if
 				//
 		} // if
 			//
+	}
+
+	private static String getAbsolutePath(final File instance) {
+		return instance != null && instance.getPath() != null ? instance.getAbsolutePath() : null;
+	}
+
+	private static void info(final Logger instance, final String message) {
+		if (instance != null) {
+			instance.info(message);
+		}
 	}
 
 	private static boolean isEmpty(final Collection<?> instance) {
