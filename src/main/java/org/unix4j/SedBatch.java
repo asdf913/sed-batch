@@ -32,6 +32,7 @@ import org.unix4j.builder.To;
 import org.unix4j.builder.Unix4jCommandBuilder;
 
 import com.github.difflib.DiffUtils;
+import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
 import io.github.toolfactory.narcissus.Narcissus;
 
@@ -59,7 +60,7 @@ public class SedBatch {
 		final Patch<String> diff = testAndApply((a, b) -> a != null && b != null, before, after,
 				(a, b) -> DiffUtils.diff(a, b, null), null);
 		//
-		if (diff != null && !isEmpty(diff.getDeltas())) {
+		if (!isEmpty(getDeltas(diff))) {
 			//
 			info(LOG, getAbsolutePath(file));
 			//
@@ -75,6 +76,24 @@ public class SedBatch {
 				//
 		} // if
 			//
+	}
+
+	private static <T> List<AbstractDelta<T>> getDeltas(final Patch<T> instance) {
+		//
+		if (instance == null) {
+			//
+			return null;
+			//
+		} // if
+			//
+		final Field field = testAndApply(x -> size(x) == 1,
+				collect(filter(
+						stream(testAndApply(Objects::nonNull, getClass(instance), FieldUtils::getAllFieldsList, null)),
+						f -> Objects.equals(getName(f), "deltas")), Collectors.toList()),
+				x -> get(x, 0), null);
+		//
+		return field == null || Narcissus.getField(instance, field) != null ? instance.getDeltas() : null;
+		//
 	}
 
 	private static String getAbsolutePath(final File instance) {
