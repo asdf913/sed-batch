@@ -59,8 +59,10 @@ public class SedBatch {
 			//
 			System.out.println(file);
 			//
-			System.out.println(testAndApply((a, b) -> Boolean.logicalAnd(a != null, b != null), before, after,
-					(a, b) -> DiffUtils.diff(a, b, null), null));
+			final Patch<String> patch = testAndApply((a, b) -> Boolean.logicalAnd(a != null, b != null), before, after,
+					(a, b) -> DiffUtils.diff(a, b, null), null);
+			//
+			System.out.println(patch);
 			//
 			if (Objects.equals(get(map, "execute"), "true")) {
 				//
