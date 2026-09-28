@@ -11,16 +11,22 @@ https://github.com/tools4j/unix4j
 ### Single File
 
 #### Dry-run (i.e. file is not changed, just display the difference)
-
 <pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=pom.xml regexp=0.0.1 replacement=0.0.2</pre>
 
 <pre>[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: /tmp/pom.xml
 [main] [INFO ] [SedBatch.info(SedBatch.java:136)]: Patch{deltas=[[ChangeDelta, position: 6, lines: [	<version>0.0.1-SNAPSHOT</version>] to [	<version>0.0.2-SNAPSHOT</version>]]]}</pre>
 
 #### Update the given file
-
 <pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=pom.xml regexp=0.0.1 replacement=0.0.2 execute=true</pre>
 
 <pre>[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: /tmp/pom.xml
 [main] [INFO ] [SedBatch.info(SedBatch.java:136)]: Patch{deltas=[[ChangeDelta, position: 6, lines: [	<version>0.0.1-SNAPSHOT</version>] to [	<version>0.0.2-SNAPSHOT</version>]]]}
 [main] [INFO ] [SedBatch.info(SedBatch.java:136)]: Updated</pre>
+
+### Multiple files
+
+#### Dry-run (i.e. file is not changed, just display the difference)
+<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar fileNameList=filesNames.txt regexp=0.0.1 replacement=0.0.2</pre>
+
+#### Update the given files
+<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar fileNameList=filesNames.txt regexp=0.0.1 replacement=0.0.2 execute=true</pre>
