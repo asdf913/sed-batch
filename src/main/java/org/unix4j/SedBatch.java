@@ -84,8 +84,8 @@ public class SedBatch {
 		return instance != null && instance.getPath() != null && instance.isFile();
 	}
 
-	private static <T, U, R, E extends Exception> R testAndApply(final BiPredicate<T, U> predicate, final T t,
-			final U u, final BiFunction<T, U, R> functionTrue, final BiFunction<T, U, R> functionFalse) {
+	private static <T, U, R> R testAndApply(final BiPredicate<T, U> predicate, final T t, final U u,
+			final BiFunction<T, U, R> functionTrue, final BiFunction<T, U, R> functionFalse) {
 		return test(predicate, t, u) ? apply(functionTrue, t, u) : apply(functionFalse, t, u);
 	}
 
