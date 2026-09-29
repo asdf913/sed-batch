@@ -11,7 +11,7 @@ https://github.com/tools4j/unix4j
 ### Single File
 
 #### Dry-run (i.e. file is not changed, just display the difference)
-<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=pom.xml regexp=0.0.1 replacement=0.0.2</pre>
+<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=/tmp/pom.xml regexp=0.0.1 replacement=0.0.2</pre>
 
 <pre>[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: /tmp/pom.xml
 [main] [INFO ] [SedBatch.info(SedBatch.java:147)]: @@ -7,1 +7,1 @@
@@ -19,7 +19,7 @@ https://github.com/tools4j/unix4j
 [main] [INFO ] [SedBatch.info(SedBatch.java:147)]: +	<version>0.0.2-SNAPSHOT</version></pre>
 
 #### Update the given file
-<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=pom.xml regexp=0.0.1 replacement=0.0.2 execute=true</pre>
+<pre>java -jar sed-batch-0.0.1-SNAPSHOT.jar file=/tmp/pom.xml regexp=0.0.1 replacement=0.0.2 execute=true</pre>
 
 <pre>[main] [INFO ] [SedBatch.info(SedBatch.java:136)]: /tmp/pom.xml
 [main] [INFO ] [SedBatch.info(SedBatch.java:147)]: @@ -7,1 +7,1 @@
