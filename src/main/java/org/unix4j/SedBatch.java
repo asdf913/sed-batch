@@ -32,8 +32,10 @@ import org.unix4j.builder.To;
 import org.unix4j.builder.Unix4jCommandBuilder;
 
 import com.github.difflib.DiffUtils;
+import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
+
 import io.github.toolfactory.narcissus.Narcissus;
 
 public class SedBatch {
@@ -91,12 +93,21 @@ public class SedBatch {
 		final Patch<String> diff = testAndApply((a, b) -> a != null && b != null, before, after,
 				(a, b) -> DiffUtils.diff(a, b, null), null);
 		//
-		if (!isEmpty(getDeltas(diff))) {
+		final List<AbstractDelta<String>> deltas = getDeltas(diff);
+		//
+		if (!isEmpty(deltas)) {
 			//
 			info(LOG, getAbsolutePath(file));
 			//
-			info(LOG, Objects.toString(diff));
+			final List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff(null, null,
+					FileUtils.readLines(file, StandardCharsets.UTF_8), diff, 0);
 			//
+			for (int i = 2; i < size(unifiedDiff); i++) {
+				//
+				info(LOG, get(unifiedDiff, i));
+				//
+			} // for
+				//
 			if (execute) {
 				//
 				toFile(sed(testAndApply(SedBatch::isFile, file, Unix4j::fromFile, null), regexp, replacement), file);
