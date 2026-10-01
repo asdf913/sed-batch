@@ -77,6 +77,8 @@ public class SedBatch extends JPanel implements ActionListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SedBatch.class);
 
+	private static final String VALUE = "value";
+
 	private JTextComponent tfFile, tfRegexp, tfReplacement = null;
 
 	private AbstractButton btnFile, btnConfirm, btnExecute = null;
@@ -301,7 +303,7 @@ public class SedBatch extends JPanel implements ActionListener {
 		final Field field = testAndApply(x -> size(x) == 1,
 				collect(filter(
 						stream(testAndApply(Objects::nonNull, getClass(instance), FieldUtils::getAllFieldsList, null)),
-						x -> Objects.equals(getName(x), "value")), Collectors.toList()),
+						x -> Objects.equals(getName(x), VALUE)), Collectors.toList()),
 				x -> get(x, 0), null);
 		//
 		return (field == null || Boolean.logicalAnd(Narcissus.getField(instance, field) != null,
@@ -334,7 +336,7 @@ public class SedBatch extends JPanel implements ActionListener {
 		final Field value = testAndApply(x -> size(x) == 1,
 				collect(filter(
 						stream(testAndApply(Objects::nonNull, getClass(input), FieldUtils::getAllFieldsList, null)),
-						x -> Objects.equals(getName(x), "value")), Collectors.toList()),
+						x -> Objects.equals(getName(x), VALUE)), Collectors.toList()),
 				x -> get(x, 0), null);
 		//
 		return (normalizedPattern == null || Narcissus.getField(instance, normalizedPattern) != null)
@@ -553,7 +555,7 @@ public class SedBatch extends JPanel implements ActionListener {
 		final Field field = testAndApply(x -> size(x) == 1,
 				collect(filter(
 						stream(testAndApply(Objects::nonNull, getClass(string), FieldUtils::getAllFieldsList, null)),
-						f -> Objects.equals(getName(f), "value")), Collectors.toList()),
+						f -> Objects.equals(getName(f), VALUE)), Collectors.toList()),
 				x -> get(x, 0), null);
 		//
 		if (string != null && field != null && Narcissus.getField(string, field) == null) {
