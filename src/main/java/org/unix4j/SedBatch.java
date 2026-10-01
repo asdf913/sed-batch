@@ -720,7 +720,7 @@ public class SedBatch extends JPanel implements ActionListener {
 					(a, b) -> toStringResult(sed(testAndApply(SedBatch::isFile, file, Unix4j::fromFile, null), a, b)),
 					null);
 			//
-			final Patch<String> diff = testAndApply((a, b) -> a != null && b != null, before, after,
+			final Patch<String> diff = testAndApply((a, b) -> Boolean.logicalAnd(a != null, b != null), before, after,
 					(a, b) -> DiffUtils.diff(a, b, null), null);
 			//
 			final List<AbstractDelta<String>> deltas = getDeltas(diff);
