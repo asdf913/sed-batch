@@ -94,12 +94,18 @@ public class SedBatch extends JPanel implements ActionListener {
 	@Note("File")
 	private JTextComponent tfFile = null;
 
-	private JTextComponent tfRegexp, tfReplacement = null;
+	@Note("Regexp")
+	private JTextComponent tfRegexp = null;
+
+	private JTextComponent tfReplacement = null;
 
 	@Note("File")
 	private AbstractButton btnFile = null;
 
-	private AbstractButton btnConfirm, btnExecute = null;
+	@Note("Confirm")
+	private AbstractButton btnConfirm = null;
+
+	private AbstractButton btnExecute = null;
 
 	private DefaultListModel<String> dlm = null;
 
