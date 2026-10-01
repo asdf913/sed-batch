@@ -8,6 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
@@ -81,9 +85,21 @@ public class SedBatch extends JPanel implements ActionListener {
 
 	private static final String MODEL = "model";
 
-	private JTextComponent tfFile, tfRegexp, tfReplacement = null;
+	@Target(ElementType.FIELD)
+	@Retention(RetentionPolicy.RUNTIME)
+	private @interface Note {
+		String value();
+	}
 
-	private AbstractButton btnFile, btnConfirm, btnExecute = null;
+	@Note("File")
+	private JTextComponent tfFile = null;
+
+	private JTextComponent tfRegexp, tfReplacement = null;
+
+	@Note("File")
+	private AbstractButton btnFile = null;
+
+	private AbstractButton btnConfirm, btnExecute = null;
 
 	private DefaultListModel<String> dlm = null;
 
