@@ -667,34 +667,8 @@ public class SedBatch extends JPanel implements ActionListener {
 		//
 		if (Objects.equals(source, btnFile)) {
 			//
-			JFileChooser jfc = null;
+			showOpenDialogAndSetText(new File("."), tfFile);
 			//
-			try {
-				//
-				jfc = new JFileChooser(getCanonicalFile(new File(".")));
-				//
-			} catch (final IOException e) {
-				//
-				throw new RuntimeException(e);
-				//
-			} // try
-				//
-			if (jfc != null && Boolean.logicalAnd(!GraphicsEnvironment.isHeadless(), !isTestMode())) {
-				//
-				final int showOpenDialog = jfc.showOpenDialog(null);
-				//
-				if (showOpenDialog == JFileChooser.APPROVE_OPTION) {
-					//
-					setText(tfFile, getAbsolutePath(jfc.getSelectedFile()));
-					//
-				} else if (showOpenDialog == JFileChooser.CANCEL_OPTION) {
-					//
-					setText(tfFile, null);
-					//
-				} // if
-					//
-			} // if
-				//
 		} else if (Objects.equals(source, btnExecute)) {
 			//
 			final File file = testAndApply(Objects::nonNull, getText(tfFile), File::new, null);
@@ -757,6 +731,38 @@ public class SedBatch extends JPanel implements ActionListener {
 					//
 				} // if
 					//
+			} // if
+				//
+		} // if
+			//
+	}
+
+	private static void showOpenDialogAndSetText(final File file, final JTextComponent jtc) {
+		//
+		JFileChooser jfc = null;
+		//
+		try {
+			//
+			jfc = new JFileChooser(getCanonicalFile(file));
+			//
+		} catch (final IOException e) {
+			//
+			throw new RuntimeException(e);
+			//
+		} // try
+			//
+		if (jfc != null && !GraphicsEnvironment.isHeadless() && !isTestMode()) {
+			//
+			final int showOpenDialog = jfc.showOpenDialog(null);
+			//
+			if (showOpenDialog == JFileChooser.APPROVE_OPTION) {
+				//
+				setText(jtc, getAbsolutePath(jfc.getSelectedFile()));
+				//
+			} else if (showOpenDialog == JFileChooser.CANCEL_OPTION) {
+				//
+				setText(jtc, null);
+				//
 			} // if
 				//
 		} // if
