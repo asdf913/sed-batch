@@ -51,6 +51,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 import org.apache.commons.io.FileUtils;
@@ -178,10 +181,41 @@ public class SedBatch extends JPanel implements ActionListener {
 			//
 			instance.add(instance.btnExecute = new JButton("Execute"), wrap);
 			//
+			setEnabled(instance.btnExecute, false);
+			//
 			instance.add(new JScrollPane(new JList<>(instance.dlm = new DefaultListModel<>())),
 					String.format("span %1$s,%2$s", 3, growx));
 			//
 			forEach(Arrays.asList(instance.btnFile, instance.btnExecute), x -> addActionListener(x, instance));
+			//
+			final Iterable<AbstractButton> abstractButtons = Arrays.asList(instance.btnExecute, instance.btnConfirm);
+			//
+			forEach(abstractButtons, x -> setEnabled(x, false));
+			//
+			addDocumentListener(getDocument(instance.tfFile), new DocumentListener() {
+
+				@Override
+				public void removeUpdate(final DocumentEvent evt) {
+					//
+					forEach(abstractButtons, x -> setEnabled(x, StringUtils.isNotBlank(getText(instance.tfFile))));
+					//
+				}
+
+				@Override
+				public void insertUpdate(final DocumentEvent evt) {
+					//
+					forEach(abstractButtons, x -> setEnabled(x, StringUtils.isNotBlank(getText(instance.tfFile))));
+					//
+				}
+
+				@Override
+				public void changedUpdate(final DocumentEvent evt) {
+					//
+					forEach(abstractButtons, x -> setEnabled(x, StringUtils.isNotBlank(getText(instance.tfFile))));
+					//
+				}
+
+			});
 			//
 			final JFrame jFrame = testAndGet(!GraphicsEnvironment.isHeadless(), JFrame::new);
 			//
@@ -218,6 +252,38 @@ public class SedBatch extends JPanel implements ActionListener {
 			//
 			perform(testAndApply(Objects::nonNull, get(map, "file"), File::new, null),
 					Pair.of(get(map, "regexp"), get(map, "replacement")), Objects.equals(get(map, "execute"), "true"));
+			//
+		} // if
+			//
+	}
+
+	private static Document getDocument(final JTextComponent instance) {
+		return instance != null ? instance.getDocument() : null;
+	}
+
+	private static void addDocumentListener(final Document instance, final DocumentListener listener) {
+		if (instance != null) {
+			instance.addDocumentListener(listener);
+		}
+	}
+
+	private static void setEnabled(final AbstractButton instance, final boolean enabled) {
+		//
+		if (instance == null) {
+			//
+			return;
+			//
+		} // if
+			//
+		final Field field = testAndApply(x -> size(x) == 1,
+				collect(filter(
+						stream(testAndApply(Objects::nonNull, getClass(instance), FieldUtils::getAllFieldsList, null)),
+						f -> Objects.equals(getName(f), "appContext")), Collectors.toList()),
+				x -> get(x, 0), null);
+		//
+		if (field == null || Narcissus.getField(instance, field) != null) {
+			//
+			instance.setEnabled(enabled);
 			//
 		} // if
 			//
